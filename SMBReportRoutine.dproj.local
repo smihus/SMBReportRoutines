@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.297,=rtl.dcp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.990,C:\Users\1\Google Диск\RAD Studio Projects\Package1.dproj=C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\SMBReportRoutine.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.269,=C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\SMBReport.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.858,=rtl.dcp</Transaction>
+  </Transactions>
+</BorlandProject>

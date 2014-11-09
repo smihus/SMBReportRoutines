@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{777A54D7-6536-4705-ACD7-9B565563A254}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="SMBReportRoutine.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Test\SMBReportRoutineTests.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="SMBReportRoutine">
+        <MSBuild Projects="SMBReportRoutine.dproj"/>
+    </Target>
+    <Target Name="SMBReportRoutine:Clean">
+        <MSBuild Projects="SMBReportRoutine.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SMBReportRoutine:Make">
+        <MSBuild Projects="SMBReportRoutine.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SMBReportRoutineTests">
+        <MSBuild Projects="Test\SMBReportRoutineTests.dproj"/>
+    </Target>
+    <Target Name="SMBReportRoutineTests:Clean">
+        <MSBuild Projects="Test\SMBReportRoutineTests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SMBReportRoutineTests:Make">
+        <MSBuild Projects="Test\SMBReportRoutineTests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="SMBReportRoutine;SMBReportRoutineTests"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="SMBReportRoutine:Clean;SMBReportRoutineTests:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="SMBReportRoutine:Make;SMBReportRoutineTests:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

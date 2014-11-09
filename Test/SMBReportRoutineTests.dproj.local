@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.653,=C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\SMBReport.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.518,=C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Test\TestSMBReport.pas</Transaction>
+    <Transaction>2014.11.09 16:00:55.051,=C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Excel_TLB.pas</Transaction>
+  </Transactions>
+</BorlandProject>
