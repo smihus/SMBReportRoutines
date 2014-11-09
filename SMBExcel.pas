@@ -21,6 +21,7 @@ const
     class function GetLCID: Integer;
     class function CheckExcelInstall: Boolean;
     class procedure Show(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
+    class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
   end;
 implementation
 uses
@@ -93,6 +94,18 @@ begin
   Result := GetUserDefaultLCID;
 end;
 
+class procedure TSMBExcel.Hide(var ExcelApp: ExcelApplication;
+  const ALCID: Integer);
+var
+  _LCID: Integer;
+begin
+  _LCID := ALCID;
+  if ALCID = 0 then
+    _LCID := GetLCID;
+  if ExcelApp.Visible[_LCID] then
+      ExcelApp.Visible[_LCID] := False;
+end;
+
 class function TSMBExcel.OpenWorkbook(const ExcelApp: ExcelApplication; FileName: String; const ALCID: Integer = 0): ExcelWorkbook;
 var
   _LCID: Integer;
@@ -127,7 +140,7 @@ begin
   _LCID := ALCID;
   if ALCID = 0 then
     _LCID := GetLCID;
-  if ExcelApp.Visible[_LCID] then
+  if not ExcelApp.Visible[_LCID] then
       ExcelApp.Visible[_LCID] := True;
 end;
 

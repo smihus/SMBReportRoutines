@@ -24,21 +24,22 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure OpenWorkbook;
-    procedure CreateExcelObj;
-    procedure FreeExcelObj;
-    procedure CheckExcelInstall;
-    procedure Show;
+    procedure ClassOpenWorkbook;
+    procedure ClassCreateExcelObj;
+    procedure ClassFreeExcelObj;
+    procedure ClassCheckExcelInstall;
+    procedure ClassShow;
+    procedure ClassHide;
   end;
 
 implementation
 
-procedure TestTSMBExcel.CheckExcelInstall;
+procedure TestTSMBExcel.ClassCheckExcelInstall;
 begin
   CheckTrue(FSMBExcel.CheckExcelInstall);
 end;
 
-procedure TestTSMBExcel.CreateExcelObj;
+procedure TestTSMBExcel.ClassCreateExcelObj;
 var
   FExcel: ExcelApplication;
 begin
@@ -47,7 +48,7 @@ begin
   FSMBExcel.FreeExcelObject(FExcel);
 end;
 
-procedure TestTSMBExcel.FreeExcelObj;
+procedure TestTSMBExcel.ClassFreeExcelObj;
 var
   FExcel: ExcelApplication;
 begin
@@ -56,12 +57,25 @@ begin
   CheckFalse(Assigned(FExcel));
 end;
 
+procedure TestTSMBExcel.ClassHide;
+var
+  FileName: string;
+  FExcel: ExcelApplication;
+  WB: ExcelWorkbook;
+begin
+  FExcel    := FSMBExcel.CreateExcelObject();
+  FileName  := 'C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Patterns\pattern1.xlsx';
+  WB        := FSMBExcel.OpenWorkbook(FExcel, FileName);
+  FSMBExcel.Hide(FExcel);
+  FSMBExcel.FreeExcelObject(FExcel);
+end;
+
 procedure TestTSMBExcel.SetUp;
 begin
   FSMBExcel := TSMBExcel.Create;
 end;
 
-procedure TestTSMBExcel.Show;
+procedure TestTSMBExcel.ClassShow;
 var
   FileName: string;
   FExcel: ExcelApplication;
@@ -80,7 +94,7 @@ begin
   FSMBExcel := nil;
 end;
 
-procedure TestTSMBExcel.OpenWorkbook;
+procedure TestTSMBExcel.ClassOpenWorkbook;
 var
   FileName: string;
   FExcel: ExcelApplication;
