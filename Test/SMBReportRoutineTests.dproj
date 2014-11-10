@@ -89,8 +89,8 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="TestSMBReport.pas"/>
-        <DCCReference Include="..\SMBReport.pas"/>
+        <DCCReference Include="TestSMBExcel.pas"/>
+        <DCCReference Include="..\SMBExcel.pas"/>
         <DCCReference Include="..\Excel_TLB.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

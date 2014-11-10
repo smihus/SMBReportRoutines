@@ -16,8 +16,8 @@ program SMBReportRoutineTests;
 
 uses
   DUnitTestRunner,
-  TestSMBReport in 'TestSMBReport.pas',
-  SMBReport in '..\SMBReport.pas',
+  TestSMBExcel in 'TestSMBExcel.pas',
+  SMBExcel in '..\SMBExcel.pas',
   Excel_TLB in '..\Excel_TLB.pas';
 
 {$R *.RES}
