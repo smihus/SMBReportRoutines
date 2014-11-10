@@ -14,6 +14,8 @@ interface
 uses
   TestFramework, SMBExcel, System.Variants, Excel_TLB;
 
+const
+  FileNamePattern1 = 'C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Patterns\pattern1.xlsx';
 type
   // Test methods for class TSMBReport
 
@@ -30,9 +32,15 @@ type
     procedure ClassCheckExcelInstall;
     procedure ClassShow;
     procedure ClassHide;
+    procedure ClassReadCellA1;
+
+    procedure CreateExcelAndOpenWorkbookPattern1;
+    procedure GetWorksheetList1;
   end;
 
 implementation
+uses
+  Vcl.Dialogs;
 
 procedure TestTSMBExcel.ClassCheckExcelInstall;
 begin
@@ -59,50 +67,73 @@ end;
 
 procedure TestTSMBExcel.ClassHide;
 var
-  FileName: string;
   FExcel: ExcelApplication;
   WB: ExcelWorkbook;
 begin
-  FExcel    := FSMBExcel.CreateExcelObject();
-  FileName  := 'C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Patterns\pattern1.xlsx';
-  WB        := FSMBExcel.OpenWorkbook(FExcel, FileName);
-  FSMBExcel.Hide(FExcel);
-  FSMBExcel.FreeExcelObject(FExcel);
+  FExcel    := TSMBExcel.CreateExcelObject();
+  WB        := TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1);
+  TSMBExcel.Show(FExcel);
+//  ShowMessage('Before Hide');
+  TSMBExcel.Hide(FExcel);
+//  ShowMessage('After Hide');
+  TSMBExcel.FreeExcelObject(FExcel);
 end;
 
 procedure TestTSMBExcel.SetUp;
 begin
-  FSMBExcel := TSMBExcel.Create;
 end;
 
 procedure TestTSMBExcel.ClassShow;
 var
-  FileName: string;
   FExcel: ExcelApplication;
   WB: ExcelWorkbook;
 begin
-  FExcel    := FSMBExcel.CreateExcelObject();
-  FileName  := 'C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Patterns\pattern1.xlsx';
-  WB        := FSMBExcel.OpenWorkbook(FExcel, FileName);
-  FSMBExcel.Show(FExcel);
-  FSMBExcel.FreeExcelObject(FExcel);
+  FExcel    := TSMBExcel.CreateExcelObject();
+  WB        := TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1);
+  TSMBExcel.Show(FExcel);
+//  ShowMessage('Test');
+  TSMBExcel.FreeExcelObject(FExcel);
+end;
+
+procedure TestTSMBExcel.CreateExcelAndOpenWorkbookPattern1;
+var
+  E: TSMBExcel;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  CheckNotNull(E);
+  E.Free;
+end;
+
+procedure TestTSMBExcel.GetWorksheetList1;
+var
+  E: TSMBExcel;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  CheckNotNull(E.Worksheet['Лист1']);
+  E.Free;
 end;
 
 procedure TestTSMBExcel.TearDown;
 begin
-  FSMBExcel.Free;
-  FSMBExcel := nil;
 end;
 
 procedure TestTSMBExcel.ClassOpenWorkbook;
 var
-  FileName: string;
   FExcel: ExcelApplication;
 begin
-  FExcel := FSMBExcel.CreateExcelObject();
-  FileName := 'C:\Users\1\Google Диск\RAD Studio Projects\SMBComponents\SMBReport\Patterns\pattern1.xlsx';
-  CheckNotNull(FSMBExcel.OpenWorkbook(FExcel, FileName));
-  FSMBExcel.FreeExcelObject(FExcel);
+  FExcel := TSMBExcel.CreateExcelObject();
+  CheckNotNull(TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1));
+  TSMBExcel.FreeExcelObject(FExcel);
+end;
+
+procedure TestTSMBExcel.ClassReadCellA1;
+var
+  FExcel: ExcelApplication;
+  WB: ExcelWorkbook;
+begin
+  FExcel    := TSMBExcel.CreateExcelObject();
+  WB        := TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1);
+  CheckEquals('Text in cell A1', FExcel.Cells.Item[1, 1]);
 end;
 
 initialization

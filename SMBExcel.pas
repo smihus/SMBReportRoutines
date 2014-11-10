@@ -12,8 +12,11 @@ const
   private
     FExcel: ExcelApplication;
     FLCID: Integer;
+    FWorkbook: ExcelWorkbook;
+    function GetWorksheet(WSName: String): ExcelWorksheet;
   public
-    constructor Create(const Visible: Boolean = False);
+    constructor Create(const Visible: Boolean = False); overload;
+    constructor Create(FileName: String; const Visible: Boolean = False); overload;
     destructor Destroy; override;
     class function OpenWorkbook(const ExcelApp: ExcelApplication; FileName: String; const ALCID: Integer = 0): ExcelWorkbook;
     class function CreateExcelObject(const Visible: Boolean = False; const ALCID: Integer = 0): ExcelApplication;
@@ -22,6 +25,8 @@ const
     class function CheckExcelInstall: Boolean;
     class procedure Show(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
     class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
+
+    property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
   end;
 implementation
 uses
@@ -48,6 +53,12 @@ begin
   end;
 end;
 
+constructor TSMBExcel.Create(FileName: String; const Visible: Boolean);
+begin
+  Create(Visible);
+  FWorkbook := TSMBExcel.OpenWorkbook(FExcel, FileName, FLCID);
+end;
+
 class function TSMBExcel.CreateExcelObject(const Visible: Boolean = False; const ALCID: Integer = 0): ExcelApplication;
 var
   _LCID: Integer;
@@ -66,8 +77,7 @@ end;
 
 destructor TSMBExcel.Destroy;
 begin
-  if not Assigned(FExcel) then
-    FreeExcelObject(FExcel, FLCID);
+  if Assigned(FExcel) then FreeExcelObject(FExcel, FLCID);
   inherited;
 end;
 
@@ -92,6 +102,11 @@ end;
 class function TSMBExcel.GetLCID: Integer;
 begin
   Result := GetUserDefaultLCID;
+end;
+
+function TSMBExcel.GetWorksheet(WSName: String): ExcelWorksheet;
+begin
+  Result := nil;
 end;
 
 class procedure TSMBExcel.Hide(var ExcelApp: ExcelApplication;
