@@ -15,6 +15,9 @@ const
     FWorkbook: ExcelWorkbook;
     function GetWorksheet(WSName: String): ExcelWorksheet;
     function GetWorkwheets: TList<ExcelWorksheet>;
+    function GetActiveWorksheet: ExcelWorksheet;
+    procedure SetActiveWorksheet(const Value: ExcelWorksheet);
+    function GetField(ParamName: String): ExcelRange;
   public
     constructor Create(const Visible: Boolean = False); overload;
     constructor Create(FileName: String; const Visible: Boolean = False); overload;
@@ -29,6 +32,8 @@ const
 
     property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
     property Worksheets: TList<ExcelWorksheet> read GetWorkwheets;
+    property ActiveWorksheet: ExcelWorksheet read GetActiveWorksheet write SetActiveWorksheet;
+    property Field[ParamName: String]: ExcelRange read GetField;
   end;
 implementation
 uses
@@ -101,6 +106,16 @@ begin
   end;
 end;
 
+function TSMBExcel.GetActiveWorksheet: ExcelWorksheet;
+begin
+  Result := FWorkbook.ActiveSheet as ExcelWorksheet;
+end;
+
+function TSMBExcel.GetField(ParamName: String): ExcelRange;
+begin
+  Result := nil;
+end;
+
 class function TSMBExcel.GetLCID: Integer;
 begin
   Result := GetUserDefaultLCID;
@@ -158,6 +173,11 @@ begin
     EmptyParam, // Local: OleVariant;
     EmptyParam, // CorruptLoad: OleVariant;
     vLCID);
+end;
+
+procedure TSMBExcel.SetActiveWorksheet(const Value: ExcelWorksheet);
+begin
+  if Assigned(Value) then Value.Activate(FLCID);
 end;
 
 class procedure TSMBExcel.Show(var ExcelApp: ExcelApplication;

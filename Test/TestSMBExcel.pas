@@ -20,8 +20,6 @@ type
   // Test methods for class TSMBReport
 
   TestTSMBExcel = class(TTestCase)
-  strict private
-    FSMBExcel: TSMBExcel;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -38,6 +36,9 @@ type
     procedure GetWorksheetList1;
     procedure GetListOfWorksheet;
     procedure GetCountOfWorksheet;
+    procedure GetActiveWorksheet;
+    procedure SetActiveWorksheet;
+    procedure FindCellTextParam1;
   end;
 
 implementation
@@ -106,6 +107,16 @@ begin
   E.Free;
 end;
 
+procedure TestTSMBExcel.FindCellTextParam1;
+var
+  E: TSMBExcel;
+  Range: ExcelRange;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  CheckNotNull(E.Field['#Param1']);
+  E.Free;
+end;
+
 procedure TestTSMBExcel.GetListOfWorksheet;
 var
   E: TSMBExcel;
@@ -125,6 +136,25 @@ begin
   E := TSMBExcel.Create(FileNamePattern1);
   WBList := E.Worksheets;
   CheckEquals(3, WBList.Count);
+  E.Free;
+end;
+
+procedure TestTSMBExcel.GetActiveWorksheet;
+var
+  E: TSMBExcel;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  CheckEquals('Лист1', E.ActiveWorksheet.Name);
+  E.Free;
+end;
+
+procedure TestTSMBExcel.SetActiveWorksheet;
+var
+  E: TSMBExcel;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  E.ActiveWorksheet := E.Worksheet['Лист2'];
+  CheckEquals('Лист2', E.ActiveWorksheet.Name);
   E.Free;
 end;
 
