@@ -2,7 +2,7 @@ unit SMBExcel;
 
 interface
 uses
-   Excel_TLB;
+   Excel_TLB, System.Generics.Collections;
 
 const
   ExcelApp = 'Excel.Application';
@@ -14,6 +14,7 @@ const
     FLCID: Integer;
     FWorkbook: ExcelWorkbook;
     function GetWorksheet(WSName: String): ExcelWorksheet;
+    function GetWorkwheets: TList<ExcelWorksheet>;
   public
     constructor Create(const Visible: Boolean = False); overload;
     constructor Create(FileName: String; const Visible: Boolean = False); overload;
@@ -27,6 +28,7 @@ const
     class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
 
     property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
+    property Worksheets: TList<ExcelWorksheet> read GetWorkwheets;
   end;
 implementation
 uses
@@ -61,15 +63,15 @@ end;
 
 class function TSMBExcel.CreateExcelObject(const Visible: Boolean = False; const ALCID: Integer = 0): ExcelApplication;
 var
-  _LCID: Integer;
+  vLCID: Integer;
 begin
-  _LCID := ALCID;
+  vLCID := ALCID;
   if ALCID = 0 then
-    _LCID := GetLCID;
+    vLCID := GetLCID;
   if CheckExcelInstall then
   begin
     Result := CoExcelApplication.Create;
-    Result.Visible[_LCID] := Visible;
+    Result.Visible[vLCID] := Visible;
   end
   else
     Result := nil;
@@ -83,14 +85,14 @@ end;
 
 class function TSMBExcel.FreeExcelObject(var ExcelApp: ExcelApplication; const ALCID: Integer = 0): Boolean;
 var
-  _LCID: Integer;
+  vLCID: Integer;
 begin
-  _LCID := ALCID;
+  vLCID := ALCID;
   if ALCID = 0 then
-    _LCID := GetLCID;
+    vLCID := GetLCID;
   try
-    if ExcelApp.Visible[_LCID] then
-      ExcelApp.Visible[_LCID] := False;
+    if ExcelApp.Visible[vLCID] then
+      ExcelApp.Visible[vLCID] := False;
     ExcelApp.Quit;
     ExcelApp  := nil;
     Result    := True;
@@ -106,28 +108,39 @@ end;
 
 function TSMBExcel.GetWorksheet(WSName: String): ExcelWorksheet;
 begin
-  Result := nil;
+  Result := FWorkbook.Sheets[WSName] as ExcelWorksheet;
+end;
+
+function TSMBExcel.GetWorkwheets: TList<ExcelWorksheet>;
+var
+  vCount: Integer;
+  i: Integer;
+begin
+  Result := TList<ExcelWorksheet>.Create;
+  vCount := FWorkbook.Sheets.Count;
+  for i := 1 to vCount do
+    Result.Add(FWorkbook.Sheets[i] as ExcelWorksheet);
 end;
 
 class procedure TSMBExcel.Hide(var ExcelApp: ExcelApplication;
   const ALCID: Integer);
 var
-  _LCID: Integer;
+  vLCID: Integer;
 begin
-  _LCID := ALCID;
+  vLCID := ALCID;
   if ALCID = 0 then
-    _LCID := GetLCID;
-  if ExcelApp.Visible[_LCID] then
-      ExcelApp.Visible[_LCID] := False;
+    vLCID := GetLCID;
+  if ExcelApp.Visible[vLCID] then
+      ExcelApp.Visible[vLCID] := False;
 end;
 
 class function TSMBExcel.OpenWorkbook(const ExcelApp: ExcelApplication; FileName: String; const ALCID: Integer = 0): ExcelWorkbook;
 var
-  _LCID: Integer;
+  vLCID: Integer;
 begin
-  _LCID := ALCID;
+  vLCID := ALCID;
   if ALCID = 0 then
-    _LCID := GetLCID;
+    vLCID := GetLCID;
   Result := ExcelApp.Workbooks.Open(
     FileName, // Filename: WideString;
     2, // UpdateLinks: OleVariant; 2 - never update
@@ -144,19 +157,19 @@ begin
     False, // AddToMru: OleVariant;
     EmptyParam, // Local: OleVariant;
     EmptyParam, // CorruptLoad: OleVariant;
-    _LCID);
+    vLCID);
 end;
 
 class procedure TSMBExcel.Show(var ExcelApp: ExcelApplication;
   const ALCID: Integer);
 var
-  _LCID: Integer;
+  vLCID: Integer;
 begin
-  _LCID := ALCID;
+  vLCID := ALCID;
   if ALCID = 0 then
-    _LCID := GetLCID;
-  if not ExcelApp.Visible[_LCID] then
-      ExcelApp.Visible[_LCID] := True;
+    vLCID := GetLCID;
+  if not ExcelApp.Visible[vLCID] then
+      ExcelApp.Visible[vLCID] := True;
 end;
 
 end.

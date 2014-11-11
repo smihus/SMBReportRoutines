@@ -36,32 +36,34 @@ type
 
     procedure CreateExcelAndOpenWorkbookPattern1;
     procedure GetWorksheetList1;
+    procedure GetListOfWorksheet;
+    procedure GetCountOfWorksheet;
   end;
 
 implementation
 uses
-  Vcl.Dialogs;
+  Vcl.Dialogs, System.Generics.Collections;
 
 procedure TestTSMBExcel.ClassCheckExcelInstall;
 begin
-  CheckTrue(FSMBExcel.CheckExcelInstall);
+  CheckTrue(TSMBExcel.CheckExcelInstall);
 end;
 
 procedure TestTSMBExcel.ClassCreateExcelObj;
 var
   FExcel: ExcelApplication;
 begin
-  FExcel := FSMBExcel.CreateExcelObject(True);
+  FExcel := TSMBExcel.CreateExcelObject(True);
   CheckTrue(Assigned(FExcel));
-  FSMBExcel.FreeExcelObject(FExcel);
+  TSMBExcel.FreeExcelObject(FExcel);
 end;
 
 procedure TestTSMBExcel.ClassFreeExcelObj;
 var
   FExcel: ExcelApplication;
 begin
-  FExcel := FSMBExcel.CreateExcelObject();
-  CheckTrue(FSMBExcel.FreeExcelObject(FExcel));
+  FExcel := TSMBExcel.CreateExcelObject();
+  CheckTrue(TSMBExcel.FreeExcelObject(FExcel));
   CheckFalse(Assigned(FExcel));
 end;
 
@@ -101,6 +103,28 @@ var
 begin
   E := TSMBExcel.Create(FileNamePattern1);
   CheckNotNull(E);
+  E.Free;
+end;
+
+procedure TestTSMBExcel.GetListOfWorksheet;
+var
+  E: TSMBExcel;
+  WBList: TList<ExcelWorksheet>;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  WBList := E.Worksheets;
+  CheckNotNull(WBList);
+  E.Free;
+end;
+
+procedure TestTSMBExcel.GetCountOfWorksheet;
+var
+  E: TSMBExcel;
+  WBList: TList<ExcelWorksheet>;
+begin
+  E := TSMBExcel.Create(FileNamePattern1);
+  WBList := E.Worksheets;
+  CheckEquals(3, WBList.Count);
   E.Free;
 end;
 
