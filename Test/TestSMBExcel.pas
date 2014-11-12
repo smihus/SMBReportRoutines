@@ -113,7 +113,8 @@ var
   Range: ExcelRange;
 begin
   E := TSMBExcel.Create(FileNamePattern1);
-  CheckNotNull(E.Field['#Param1']);
+  Range := E.Field['Лист1', '#Param1'];
+  CheckEquals('#Param1', Range.Value2);
   E.Free;
 end;
 

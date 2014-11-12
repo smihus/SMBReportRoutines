@@ -17,7 +17,7 @@ const
     function GetWorkwheets: TList<ExcelWorksheet>;
     function GetActiveWorksheet: ExcelWorksheet;
     procedure SetActiveWorksheet(const Value: ExcelWorksheet);
-    function GetField(ParamName: String): ExcelRange;
+    function GetField(const vWorksheet: String; const Text: string): ExcelRange;
   public
     constructor Create(const Visible: Boolean = False); overload;
     constructor Create(FileName: String; const Visible: Boolean = False); overload;
@@ -33,7 +33,7 @@ const
     property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
     property Worksheets: TList<ExcelWorksheet> read GetWorkwheets;
     property ActiveWorksheet: ExcelWorksheet read GetActiveWorksheet write SetActiveWorksheet;
-    property Field[ParamName: String]: ExcelRange read GetField;
+    property Field[const vWorksheet: String; const Text: String]: ExcelRange read GetField;
   end;
 implementation
 uses
@@ -111,9 +111,18 @@ begin
   Result := FWorkbook.ActiveSheet as ExcelWorksheet;
 end;
 
-function TSMBExcel.GetField(ParamName: String): ExcelRange;
+function TSMBExcel.GetField(const vWorksheet: String; const Text: string): ExcelRange;
 begin
-  Result := nil;
+  Result := Worksheet[vWorksheet].Cells.Find(
+    Text,        // What
+    EmptyParam,  // After
+    EmptyParam,  // LookIn
+    xlWhole,     // LookAt
+    EmptyParam,  // SearchOrder
+    xlByRows,    // SearchDirection
+    True,        // MatchCase
+    False,       // MatchByte
+    EmptyParam); // SearchFormat
 end;
 
 class function TSMBExcel.GetLCID: Integer;
