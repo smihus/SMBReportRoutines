@@ -37,6 +37,7 @@ type
     procedure FindCellTextParam1;
     procedure FindRangeByName;
     procedure CopyRangeA10B11ToG17;
+    procedure GetAbsoluteRangeAddress;
   end;
 
 implementation
@@ -78,6 +79,15 @@ procedure TestTSMBExcel.GetCountOfWorksheet;
 begin
   WBList := E.Worksheets;
   CheckEquals(3, WBList.Count);
+end;
+
+procedure TestTSMBExcel.GetAbsoluteRangeAddress;
+var
+  Address: String;
+begin
+  Range := E.Range['Лист1', 'RangeA10B11'];
+  Address := E.GetAbsoluteRangeAddressR1C1(Range);
+  CheckEquals('R10C1:R11C2', Address);
 end;
 
 procedure TestTSMBExcel.GetActiveWorksheet;

@@ -32,7 +32,8 @@ type
     class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0); overload;
     procedure Show; overload;
     procedure Hide; overload;
-    procedure Copy(SourceRange: ExcelRange; DestinationRange: ExcelRange);
+    procedure Copy(SourceRange: ExcelRange; DestinationRange: ExcelRange; WithColumnWidth: Boolean = True);
+    function GetAbsoluteRangeAddressR1C1(Range: ExcelRange): String;
     property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
     property Worksheets: TList<ExcelWorksheet> read GetWorkwheets;
     property ActiveWorksheet: ExcelWorksheet read GetActiveWorksheet write SetActiveWorksheet;
@@ -64,9 +65,12 @@ begin
   end;
 end;
 
-procedure TSMBExcel.Copy(SourceRange, DestinationRange: ExcelRange);
+procedure TSMBExcel.Copy(SourceRange, DestinationRange: ExcelRange; WithColumnWidth: Boolean = True);
 begin
-  SourceRange.Copy(DestinationRange);
+  SourceRange.Copy(EmptyParam);
+  DestinationRange.PasteSpecial(xlPasteAll, xlPasteSpecialOperationNone, False, False);
+  if WithColumnWidth then
+    DestinationRange.PasteSpecial(xlPasteColumnWidths, xlPasteSpecialOperationNone, False, False);
 end;
 
 constructor TSMBExcel.Create(FileName: String; const Visible: Boolean);
@@ -113,6 +117,11 @@ begin
   except
     Result := False;
   end;
+end;
+
+function TSMBExcel.GetAbsoluteRangeAddressR1C1(Range: ExcelRange): String;
+begin
+  Result := Range.Address[True, True, xlR1C1, EmptyParam, EmptyParam];
 end;
 
 function TSMBExcel.GetActiveWorksheet: ExcelWorksheet;
