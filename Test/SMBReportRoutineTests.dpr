@@ -18,7 +18,8 @@ uses
   DUnitTestRunner,
   TestSMBExcel in 'TestSMBExcel.pas',
   SMBExcel in '..\SMBExcel.pas',
-  Excel_TLB in '..\Excel_TLB.pas';
+  Excel_TLB in '..\Excel_TLB.pas',
+  TestSMBExcelClassMembers in 'TestSMBExcelClassMembers.pas';
 
 {$R *.RES}
 

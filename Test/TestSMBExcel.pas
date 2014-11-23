@@ -12,7 +12,7 @@ unit TestSMBExcel;
 interface
 
 uses
-  TestFramework, SMBExcel, System.Variants, Excel_TLB;
+  TestFramework, SMBExcel, System.Variants, Excel_TLB, System.Generics.Collections;
 
 const
   FileNamePattern1 = 'C:\Users\1\Google Äèñê\RAD Studio Projects\SMBComponents\SMBReport\Patterns\pattern1.xlsx';
@@ -20,18 +20,14 @@ type
   // Test methods for class TSMBReport
 
   TestTSMBExcel = class(TTestCase)
+  private
+    E: TSMBExcel;
+    Range: ExcelRange;
+    WBList: TList<ExcelWorksheet>;
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure ClassOpenWorkbook;
-    procedure ClassCreateExcelObj;
-    procedure ClassFreeExcelObj;
-    procedure ClassCheckExcelInstall;
-    procedure ClassShow;
-    procedure ClassHide;
-    procedure ClassReadCellA1;
-
     procedure CreateExcelAndOpenWorkbookPattern1;
     procedure GetWorksheetList1;
     procedure GetListOfWorksheet;
@@ -39,156 +35,77 @@ type
     procedure GetActiveWorksheet;
     procedure SetActiveWorksheet;
     procedure FindCellTextParam1;
+    procedure FindRangeByName;
+    procedure CopyRangeA10B11ToG17;
   end;
 
 implementation
 uses
-  Vcl.Dialogs, System.Generics.Collections;
+  Vcl.Dialogs;
 
-procedure TestTSMBExcel.ClassCheckExcelInstall;
+procedure TestTSMBExcel.CopyRangeA10B11ToG17;
 begin
-  CheckTrue(TSMBExcel.CheckExcelInstall);
+  Range := E.Range['Ëèñò1', 'RangeA10B11'];
+  E.Copy(Range, E.Worksheet['Ëèñò1'].Range['G17', EmptyParam]);
+  E.Show;
+  ShowMessage('Test');
 end;
 
-procedure TestTSMBExcel.ClassCreateExcelObj;
-var
-  FExcel: ExcelApplication;
+procedure TestTSMBExcel.CreateExcelAndOpenWorkbookPattern1;
 begin
-  FExcel := TSMBExcel.CreateExcelObject(True);
-  CheckTrue(Assigned(FExcel));
-  TSMBExcel.FreeExcelObject(FExcel);
+  CheckNotNull(E);
 end;
 
-procedure TestTSMBExcel.ClassFreeExcelObj;
-var
-  FExcel: ExcelApplication;
+procedure TestTSMBExcel.FindCellTextParam1;
 begin
-  FExcel := TSMBExcel.CreateExcelObject();
-  CheckTrue(TSMBExcel.FreeExcelObject(FExcel));
-  CheckFalse(Assigned(FExcel));
+  Range := E.Field['Ëèñò1', '#Param1'];
+  CheckEquals('#Param1', Range.Value2);
 end;
 
-procedure TestTSMBExcel.ClassHide;
-var
-  FExcel: ExcelApplication;
-  WB: ExcelWorkbook;
+procedure TestTSMBExcel.FindRangeByName;
 begin
-  FExcel    := TSMBExcel.CreateExcelObject();
-  WB        := TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1);
-  TSMBExcel.Show(FExcel);
-//  ShowMessage('Before Hide');
-  TSMBExcel.Hide(FExcel);
-//  ShowMessage('After Hide');
-  TSMBExcel.FreeExcelObject(FExcel);
+  Range := E.Range['Ëèñò1', 'RangeE7'];
+  CheckEquals('123', Range.Value2);
+end;
+
+procedure TestTSMBExcel.GetListOfWorksheet;
+begin
+  WBList := E.Worksheets;
+  CheckNotNull(WBList);
+end;
+
+procedure TestTSMBExcel.GetCountOfWorksheet;
+begin
+  WBList := E.Worksheets;
+  CheckEquals(3, WBList.Count);
+end;
+
+procedure TestTSMBExcel.GetActiveWorksheet;
+begin
+  CheckEquals('Ëèñò1', E.ActiveWorksheet.Name);
+end;
+
+procedure TestTSMBExcel.SetActiveWorksheet;
+begin
+  E.ActiveWorksheet := E.Worksheet['Ëèñò2'];
+  CheckEquals('Ëèñò2', E.ActiveWorksheet.Name);
 end;
 
 procedure TestTSMBExcel.SetUp;
 begin
-end;
-
-procedure TestTSMBExcel.ClassShow;
-var
-  FExcel: ExcelApplication;
-  WB: ExcelWorkbook;
-begin
-  FExcel    := TSMBExcel.CreateExcelObject();
-  WB        := TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1);
-  TSMBExcel.Show(FExcel);
-//  ShowMessage('Test');
-  TSMBExcel.FreeExcelObject(FExcel);
-end;
-
-procedure TestTSMBExcel.CreateExcelAndOpenWorkbookPattern1;
-var
-  E: TSMBExcel;
-begin
+  inherited;
   E := TSMBExcel.Create(FileNamePattern1);
-  CheckNotNull(E);
-  E.Free;
-end;
-
-procedure TestTSMBExcel.FindCellTextParam1;
-var
-  E: TSMBExcel;
-  Range: ExcelRange;
-begin
-  E := TSMBExcel.Create(FileNamePattern1);
-  Range := E.Field['Ëèñò1', '#Param1'];
-  CheckEquals('#Param1', Range.Value2);
-  E.Free;
-end;
-
-procedure TestTSMBExcel.GetListOfWorksheet;
-var
-  E: TSMBExcel;
-  WBList: TList<ExcelWorksheet>;
-begin
-  E := TSMBExcel.Create(FileNamePattern1);
-  WBList := E.Worksheets;
-  CheckNotNull(WBList);
-  E.Free;
-end;
-
-procedure TestTSMBExcel.GetCountOfWorksheet;
-var
-  E: TSMBExcel;
-  WBList: TList<ExcelWorksheet>;
-begin
-  E := TSMBExcel.Create(FileNamePattern1);
-  WBList := E.Worksheets;
-  CheckEquals(3, WBList.Count);
-  E.Free;
-end;
-
-procedure TestTSMBExcel.GetActiveWorksheet;
-var
-  E: TSMBExcel;
-begin
-  E := TSMBExcel.Create(FileNamePattern1);
-  CheckEquals('Ëèñò1', E.ActiveWorksheet.Name);
-  E.Free;
-end;
-
-procedure TestTSMBExcel.SetActiveWorksheet;
-var
-  E: TSMBExcel;
-begin
-  E := TSMBExcel.Create(FileNamePattern1);
-  E.ActiveWorksheet := E.Worksheet['Ëèñò2'];
-  CheckEquals('Ëèñò2', E.ActiveWorksheet.Name);
-  E.Free;
-end;
-
-procedure TestTSMBExcel.GetWorksheetList1;
-var
-  E: TSMBExcel;
-begin
-  E := TSMBExcel.Create(FileNamePattern1);
-  CheckNotNull(E.Worksheet['Ëèñò1']);
-  E.Free;
 end;
 
 procedure TestTSMBExcel.TearDown;
 begin
+  inherited;
+  E.Free;
 end;
 
-procedure TestTSMBExcel.ClassOpenWorkbook;
-var
-  FExcel: ExcelApplication;
+procedure TestTSMBExcel.GetWorksheetList1;
 begin
-  FExcel := TSMBExcel.CreateExcelObject();
-  CheckNotNull(TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1));
-  TSMBExcel.FreeExcelObject(FExcel);
-end;
-
-procedure TestTSMBExcel.ClassReadCellA1;
-var
-  FExcel: ExcelApplication;
-  WB: ExcelWorkbook;
-begin
-  FExcel    := TSMBExcel.CreateExcelObject();
-  WB        := TSMBExcel.OpenWorkbook(FExcel, FileNamePattern1);
-  CheckEquals('Text in cell A1', FExcel.Cells.Item[1, 1]);
+  CheckNotNull(E.Worksheet['Ëèñò1']);
 end;
 
 initialization

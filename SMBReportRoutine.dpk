@@ -28,7 +28,8 @@ package SMBReportRoutine;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  vcl;
 
 contains
   SMBExcel in 'SMBExcel.pas',

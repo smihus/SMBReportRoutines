@@ -7,7 +7,7 @@ uses
 const
   ExcelApp = 'Excel.Application';
 
-   type
+type
   TSMBExcel = class
   private
     FExcel: ExcelApplication;
@@ -18,6 +18,7 @@ const
     function GetActiveWorksheet: ExcelWorksheet;
     procedure SetActiveWorksheet(const Value: ExcelWorksheet);
     function GetField(const vWorksheet: String; const Text: string): ExcelRange;
+    function GetRange(const vWorksheet, Name: String): ExcelRange;
   public
     constructor Create(const Visible: Boolean = False); overload;
     constructor Create(FileName: String; const Visible: Boolean = False); overload;
@@ -27,13 +28,16 @@ const
     class function FreeExcelObject(var ExcelApp: ExcelApplication; const ALCID: Integer = 0): Boolean;
     class function GetLCID: Integer;
     class function CheckExcelInstall: Boolean;
-    class procedure Show(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
-    class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0);
-
+    class procedure Show(var ExcelApp: ExcelApplication; const ALCID: Integer = 0); overload;
+    class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0); overload;
+    procedure Show; overload;
+    procedure Hide; overload;
+    procedure Copy(SourceRange: ExcelRange; DestinationRange: ExcelRange);
     property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
     property Worksheets: TList<ExcelWorksheet> read GetWorkwheets;
     property ActiveWorksheet: ExcelWorksheet read GetActiveWorksheet write SetActiveWorksheet;
     property Field[const vWorksheet: String; const Text: String]: ExcelRange read GetField;
+    property Range[const vWorksheet: String; const Name: String]: ExcelRange read GetRange;
   end;
 implementation
 uses
@@ -58,6 +62,11 @@ begin
     FLCID  := GetLCID;
     FExcel := CreateExcelObject(False, FLCID);
   end;
+end;
+
+procedure TSMBExcel.Copy(SourceRange, DestinationRange: ExcelRange);
+begin
+  SourceRange.Copy(DestinationRange);
 end;
 
 constructor TSMBExcel.Create(FileName: String; const Visible: Boolean);
@@ -130,6 +139,11 @@ begin
   Result := GetUserDefaultLCID;
 end;
 
+function TSMBExcel.GetRange(const vWorksheet, Name: String): ExcelRange;
+begin
+  Result := Worksheet[vWorksheet].Range[Name, EmptyParam];
+end;
+
 function TSMBExcel.GetWorksheet(WSName: String): ExcelWorksheet;
 begin
   Result := FWorkbook.Sheets[WSName] as ExcelWorksheet;
@@ -144,6 +158,11 @@ begin
   vCount := FWorkbook.Sheets.Count;
   for i := 1 to vCount do
     Result.Add(FWorkbook.Sheets[i] as ExcelWorksheet);
+end;
+
+procedure TSMBExcel.Hide;
+begin
+ FExcel.Visible[FLCID] := False;
 end;
 
 class procedure TSMBExcel.Hide(var ExcelApp: ExcelApplication;
@@ -187,6 +206,11 @@ end;
 procedure TSMBExcel.SetActiveWorksheet(const Value: ExcelWorksheet);
 begin
   if Assigned(Value) then Value.Activate(FLCID);
+end;
+
+procedure TSMBExcel.Show;
+begin
+  FExcel.Visible[FLCID] := True;
 end;
 
 class procedure TSMBExcel.Show(var ExcelApp: ExcelApplication;

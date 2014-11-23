@@ -75,6 +75,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="SMBExcel.pas"/>
         <DCCReference Include="Excel_TLB.pas"/>
         <BuildConfiguration Include="Release">
