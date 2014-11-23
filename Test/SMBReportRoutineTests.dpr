@@ -19,7 +19,9 @@ uses
   TestSMBExcel in 'TestSMBExcel.pas',
   SMBExcel in '..\SMBExcel.pas',
   Excel_TLB in '..\Excel_TLB.pas',
-  TestSMBExcelClassMembers in 'TestSMBExcelClassMembers.pas';
+  TestSMBExcelClassMembers in 'TestSMBExcelClassMembers.pas',
+  TestSMBReport in 'TestSMBReport.pas',
+  SMBReport in '..\SMBReport.pas';
 
 {$R *.RES}
 

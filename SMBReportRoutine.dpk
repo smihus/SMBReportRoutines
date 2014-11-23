@@ -33,6 +33,7 @@ requires
 
 contains
   SMBExcel in 'SMBExcel.pas',
-  Excel_TLB in 'Excel_TLB.pas';
+  Excel_TLB in 'Excel_TLB.pas',
+  SMBReport in 'SMBReport.pas';
 
 end.

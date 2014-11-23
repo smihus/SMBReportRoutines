@@ -78,6 +78,7 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="SMBExcel.pas"/>
         <DCCReference Include="Excel_TLB.pas"/>
+        <DCCReference Include="SMBReport.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

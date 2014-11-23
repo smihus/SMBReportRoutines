@@ -20,8 +20,7 @@ type
     function GetField(const vWorksheet: String; const Text: string): ExcelRange;
     function GetRange(const vWorksheet, Name: String): ExcelRange;
   public
-    constructor Create(const Visible: Boolean = False); overload;
-    constructor Create(FileName: String; const Visible: Boolean = False); overload;
+    constructor Create(FileName: String = ''; const Visible: Boolean = False); overload;
     destructor Destroy; override;
     class function OpenWorkbook(const ExcelApp: ExcelApplication; FileName: String; const ALCID: Integer = 0): ExcelWorkbook;
     class function CreateExcelObject(const Visible: Boolean = False; const ALCID: Integer = 0): ExcelApplication;
@@ -32,6 +31,7 @@ type
     class procedure Hide(var ExcelApp: ExcelApplication; const ALCID: Integer = 0); overload;
     procedure Show; overload;
     procedure Hide; overload;
+    function NewWorkbook: ExcelWorkbook;
     procedure Copy(SourceRange: ExcelRange; DestinationRange: ExcelRange; WithColumnWidth: Boolean = True);
     function GetAbsoluteRangeAddressR1C1(Range: ExcelRange): String;
     property Worksheet[WSName: String]: ExcelWorksheet read GetWorksheet;
@@ -55,16 +55,6 @@ begin
   Result  := (Rez = S_OK);
 end;
 
-constructor TSMBExcel.Create(const Visible: Boolean = False);
-begin
-  inherited Create;
-  if CheckExcelInstall then
-  begin
-    FLCID  := GetLCID;
-    FExcel := CreateExcelObject(False, FLCID);
-  end;
-end;
-
 procedure TSMBExcel.Copy(SourceRange, DestinationRange: ExcelRange; WithColumnWidth: Boolean = True);
 begin
   SourceRange.Copy(EmptyParam);
@@ -73,10 +63,18 @@ begin
     DestinationRange.PasteSpecial(xlPasteColumnWidths, xlPasteSpecialOperationNone, False, False);
 end;
 
-constructor TSMBExcel.Create(FileName: String; const Visible: Boolean);
+constructor TSMBExcel.Create(FileName: String = ''; const Visible: Boolean = False);
 begin
-  Create(Visible);
-  FWorkbook := TSMBExcel.OpenWorkbook(FExcel, FileName, FLCID);
+  inherited Create;
+  if CheckExcelInstall then
+  begin
+    FLCID  := GetLCID;
+    FExcel := CreateExcelObject(False, FLCID);
+  end;
+  if Trim(FileName) = '' then
+    FWorkbook := NewWorkbook
+  else
+    FWorkbook := TSMBExcel.OpenWorkbook(FExcel, FileName, FLCID);
 end;
 
 class function TSMBExcel.CreateExcelObject(const Visible: Boolean = False; const ALCID: Integer = 0): ExcelApplication;
@@ -172,6 +170,11 @@ end;
 procedure TSMBExcel.Hide;
 begin
  FExcel.Visible[FLCID] := False;
+end;
+
+function TSMBExcel.NewWorkbook: ExcelWorkbook;
+begin
+  Result := FExcel.Workbooks.Add(EmptyParam, FLCID);
 end;
 
 class procedure TSMBExcel.Hide(var ExcelApp: ExcelApplication;
