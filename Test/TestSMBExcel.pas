@@ -93,13 +93,14 @@ end;
 
 procedure TestTSMBExcel.SetUp;
 begin
-  inherited;
   E := TSMBExcel.Create(FileNamePattern1);
 end;
 
 procedure TestTSMBExcel.TearDown;
 begin
-  inherited;
+  Range := nil;
+  WBList.Free;
+  WBList := nil;
   E.Free;
 end;
 

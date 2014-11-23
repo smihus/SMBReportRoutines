@@ -21,7 +21,6 @@ type
   TestTSMBExcelClassMembers = class(TTestCase)
   strict private
     FExcel: ExcelApplication;
-    FSMBExcel: TSMBExcel;
     WB: ExcelWorkbook;
   public
     procedure SetUp; override;
@@ -80,6 +79,7 @@ end;
 procedure TestTSMBExcelClassMembers.TearDown;
 begin
   inherited;
+  WB := nil;
   TSMBExcel.FreeExcelObject(FExcel);
 end;
 
